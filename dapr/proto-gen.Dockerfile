@@ -19,7 +19,6 @@ RUN make DESTDIR=/libgpr install
 
 FROM ubuntu:latest AS ubuntu-grpc
 ENV DEBIAN_FRONTEND="noninteractive"
-RUN apt-get update && apt-get install -y git
 COPY --from=grpc-builder /libgpr /
 COPY --from=grpc-builder /grpc/third_party/protobuf/src /protobuf
 RUN ldconfig && protoc --version
@@ -28,9 +27,9 @@ FROM ubuntu-grpc AS dapr-protobuf-builder
 WORKDIR /
 COPY . /dapr
 WORKDIR /dapr
+RUN mkdir -p /out
 ARG LANG
 ARG FILE
-RUN mkdir -p /out
 RUN protoc --proto_path=. --proto_path=/protobuf --${LANG}_out=/out --grpc_out=/out \
     --plugin=protoc-gen-grpc=/usr/local/bin/grpc_${LANG}_plugin \
     $FILE
