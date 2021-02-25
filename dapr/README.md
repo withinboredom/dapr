@@ -26,6 +26,21 @@ make init-proto
 make gen-proto
 ```
 
+### Using Docker for other languages
+
+1. In a terminal, navigate to the root of the repo
+
+```bash
+DOCKER_BUILDKIT=1 docker build --target proto-gen -f dapr/proto-gen.Dockerfile \
+    --build-arg GRPC_VERSION=v1.36.0 \
+    --build-arg LANG=<cpp|csharp|node|php|python|ruby> \
+    --build-arg FILE=<path to .proto file from root of repo> \
+    --output directory/to/copy/generated/files/to \
+    .
+```
+
+2. After a few moments, the docker image will finish building.
+3. The generated files are now in `directory/to/copy/generated/files/to`, it will be created if it doesn't exist.
 
 ## Update e2e test apps
 Whenever there are breaking changes in the proto files, we need to update the e2e test apps to use the correct version of dapr dependencies. This can be done by navigating to the tests folder and running the commands:-
